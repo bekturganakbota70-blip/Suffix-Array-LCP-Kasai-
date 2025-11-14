@@ -11,15 +11,14 @@ This repository contains a Java implementation of constructing a suffix array an
 
 ## Testing
 - Input string length and content are read from `input1.txt`.
-- This example uses the string `"banana"` of moderate length.
+- This example uses the string `"abcabcd"` of moderate length.
 - Output is written to `output1.txt` showing the suffix array, LCP array, and the list of suffixes.
 
 ## Results Summary
-For input `"banana"`:
-- Suffix Array: [5, 3, 1, 0, 4, 2]
-- LCP Array: [1, 3, 0, 0, 2, 0]  
+For input `"abcabcd"`:
+-Suffix Array: [0, 3, 1, 4, 2, 5, 6]
+-LCP Array: [3, 0, 2, 0, 1, 0, 0]
 
 This matches the expected lexicographic order of suffixes and their longest common prefixes.
 
-## How to Run
-1. Compile:
+
