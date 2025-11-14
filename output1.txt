@@ -1,0 +1,11 @@
+Suffix Array: [0, 3, 1, 4, 2, 5, 6]
+LCP Array: [3, 0, 2, 0, 1, 0, 0]
+
+Suffixes:
+0: abcabcd
+3: abcd
+1: bcabcd
+4: bcd
+2: cabcd
+5: cd
+6: d
