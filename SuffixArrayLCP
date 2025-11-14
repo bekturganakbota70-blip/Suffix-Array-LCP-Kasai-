@@ -1,0 +1,115 @@
+package SuffixArray_KasaiLCP;
+
+import java.util.Arrays;
+
+public class SuffixArrayLCP {
+
+    // Class representing a suffix starting at a given index with its suffix string
+    static class Suffix implements Comparable<Suffix> {
+        int index;      // Starting index of suffix in original string
+        String suffix;  // The suffix string starting from index
+
+        Suffix(int index, String suffix) {
+            this.index = index;
+            this.suffix = suffix;
+        }
+
+        // Compare suffixes lexicographically for sorting
+        @Override
+        public int compareTo(Suffix other) {
+            return this.suffix.compareTo(other.suffix);
+        }
+    }
+
+    // Build suffix array for the given text
+    // Returns an array of starting indices of suffixes sorted lex order
+    public static int[] buildSuffixArray(String text) {
+        int n = text.length();
+        Suffix[] suffixes = new Suffix[n];
+
+        // Create suffix objects for all suffixes of the string
+        for (int i = 0; i < n; i++) {
+            suffixes[i] = new Suffix(i, text.substring(i));
+        }
+
+        // Sort suffixes lexicographically
+        Arrays.sort(suffixes);
+
+        // Extract the starting indices to form the suffix array
+        int[] suffixArray = new int[n];
+        for (int i = 0; i < n; i++) {
+            suffixArray[i] = suffixes[i].index;
+        }
+
+        return suffixArray;
+    }
+
+    // Build the LCP (Longest Common Prefix) array using Kasai's algorithm
+    // LCP[i] contains the length of the longest common prefix between suffix i and suffix i+1 in suffix array order
+    public static int[] buildLCPArray(String text, int[] suffixArray) {
+        int n = text.length();
+        int[] lcp = new int[n];          // Result array to store LCP values
+        int[] invSuffix = new int[n];    // Inverse of suffix array: position of suffix i in suffixArray
+
+        // Fill the inverse suffix array to quickly find the rank of any suffix
+        for (int i = 0; i < n; i++) {
+            invSuffix[suffixArray[i]] = i;
+        }
+
+        int k = 0; // Length of current LCP
+
+        // Iterate over all suffixes in the order of the original string
+        for (int i = 0; i < n; i++) {
+            // If suffix is last suffix in suffixArray, LCP is zero by definition
+            if (invSuffix[i] == n - 1) {
+                k = 0;
+                continue;
+            }
+
+            // j is index of next suffix in lexicographical order
+            int j = suffixArray[invSuffix[i] + 1];
+
+            // Increase k while characters match
+            while (i + k < n && j + k < n && text.charAt(i + k) == text.charAt(j + k)) {
+                k++;
+            }
+
+            // Store LCP for this position
+            lcp[invSuffix[i]] = k;
+
+            // Reduce k by 1 for next iteration (Kasai optimization)
+            if (k > 0) {
+                k--;
+            }
+        }
+
+        return lcp;
+    }
+
+    // Main method to test suffix array and LCP construction on sample strings
+    public static void main(String[] args) {
+        String[] testStrings = {
+                "abc",          // Short string test case
+                "banana",       // Medium length test case
+                "mississippi"   // Longer string test case
+        };
+
+        // Process each test string
+        for (String text : testStrings) {
+            System.out.println("String: " + text);
+
+            // Build suffix array for current string
+            int[] suffixArray = buildSuffixArray(text);
+
+            // Build LCP array for current string
+            int[] lcpArray = buildLCPArray(text, suffixArray);
+
+            // Print suffix array indices
+            System.out.println("Suffix Array: " + Arrays.toString(suffixArray));
+
+            // Print LCP array values
+            System.out.println("LCP Array: " + Arrays.toString(lcpArray));
+            System.out.println();
+        }
+    }
+}
